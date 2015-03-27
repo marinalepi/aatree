@@ -89,7 +89,7 @@ int AATree::insert(AADataBase *inp, AATreeNode* &node) {
 	return 0;
 }
 
-void AATree::remove(AADataBase *inp, AATreeNode* &node, AATreeNode* &found, AATreeNode* &last) {
+void AATree::remove(const AADataBase *inp, AATreeNode* &node, AATreeNode* &found, AATreeNode* &last) {
 	if (!node) {
         return;
 	}
@@ -134,7 +134,7 @@ void AATree::remove(AADataBase *inp, AATreeNode* &node, AATreeNode* &found, AATr
 	}
 }
 
-AATreeNode *AATree::get(AADataBase *inp) const {
+const AATreeNode *AATree::get(const AADataBase *inp) const {
 	AATreeNode *node = tree;
 	
 	while (node) {
@@ -272,13 +272,7 @@ int AATree::load(ifstream &f, AATreeNode* &node, AADataBase *(*createData)(unsig
 	return ret == 0? load(f, node->right, createData) : ret;
 }
 
-int AATree::load(const char *fName, AADataBase *(*createData)(unsigned char *a, unsigned int s)) {
-	ifstream f;
-	f.open(fName, ios_base::in | ios_base::binary);
-	if (!f.is_open()) {
-		return errno;
-	}
-	
+int AATree::load(ifstream &f, AADataBase *(*createData)(unsigned char *a, unsigned int s)) {	
 	erase(tree);
 	int ret = load(f, tree, createData);
 	
@@ -325,16 +319,7 @@ int AATree::save(ofstream &f, AATreeNode* node) const {
 	return ret == 0? save(f, node->right) : ret;
 }	
 
-int AATree::save(const char *fName) const {
-	ofstream f;
-	f.open(fName, ios_base::out | ios_base::binary);
-	if (!f.is_open()) {
-		return errno;
-	}
-		
-	int ret = save(f, tree);
-
-	f.close();
-	return ret;
+int AATree::save(ofstream &f) const {		
+	return save(f, tree);
 }
 

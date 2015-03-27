@@ -3,6 +3,8 @@
 
 #include "aadata.h"
 
+typedef AADataBase *(*createDataElement)(unsigned char *a, unsigned int s);
+
 struct AATreeNode {
 	AADataBase *data;
 	unsigned int level;
@@ -23,11 +25,11 @@ private:
 	unsigned int nodeCount;
 	
 	int insert(AADataBase *inp, AATreeNode* &node);
-	void remove(AADataBase *inp, AATreeNode* &node, AATreeNode* &found, AATreeNode* &last);
+	void remove(const AADataBase *inp, AATreeNode* &node, AATreeNode* &found, AATreeNode* &last);
 	void skew(AATreeNode* &node);
 	void split(AATreeNode* &node);
 	void erase(AATreeNode* &node);
-	int load(ifstream &f, AATreeNode* &node, AADataBase * (*createData)(unsigned char *a, unsigned int s));
+	int load(ifstream &f, AATreeNode* &node, createDataElement foo);
 	int save(ofstream &f, AATreeNode* node) const;
 	
 public:
@@ -42,23 +44,23 @@ public:
 	int insert(AADataBase *inp) {
 		return insert(inp, tree);
 	}
-	void remove(AADataBase *inp) {
+	void remove(const AADataBase *inp) {
 		AATreeNode *found = NULL;
 		AATreeNode *last = NULL;
 		return remove(inp, tree, found, last);
 	}
-	AATreeNode *get() const {
+	const AATreeNode *get() const {
 		return tree;
 	}
-	AATreeNode *get(AADataBase *inp) const;
-	unsigned int getNumNode() const {
+	const AATreeNode *get(const AADataBase *inp) const;
+	unsigned int getNodeCount() const {
 		return nodeCount;
 	}
 	void prettyPrint() const;
 	void erase() {
 		erase(tree);
 	}
-	int load(const char *fName, AADataBase *(*createData)(unsigned char *a, unsigned int s) =  createAADataBase);
-	int save(const char *fName) const;
+	int load(ifstream &f, createDataElement =  createAADataBase);
+	int save(ofstream &f) const;
 };
 #endif // AATREE_H

@@ -22,7 +22,7 @@ public:
 			delete [] bytes;
 		}
 	}
-	virtual int compare(AADataBase *b) {
+	virtual int compare(const AADataBase *b)  const {
 		if (!b) {
 			return 1;
 		}
@@ -73,7 +73,7 @@ public:
 	AADataInt(int i) {
 		param = i;
 	}
-	int compare(AADataBase *b) {
+	int compare(const AADataBase *b) const {
 		int cmpParam = ((AADataInt*)b)->param;
 		if (param < cmpParam) {
 			return -1;
