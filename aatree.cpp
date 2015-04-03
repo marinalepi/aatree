@@ -229,10 +229,10 @@ void AATree::erase(AATreeNode* &node) {
 	node = NULL;
 }
 
-int AATree::load(ifstream &f, AATreeNode* &node, AADataBase *(*createData)(unsigned char *a, unsigned int s)) {
+int AATree::load(ifstream &f, AATreeNode* &node, AADataBase *(*createData)(char *a, size_t s)) {
 	node = NULL;
 	// read size
-	unsigned int size;
+	size_t size;
 	f.read(reinterpret_cast< char *>(&size), sizeof(size));
 	if (f.fail()) {
 		return EIO;
@@ -246,12 +246,12 @@ int AATree::load(ifstream &f, AATreeNode* &node, AADataBase *(*createData)(unsig
 	if (!node) {
 		return ENOMEM;
 	}
-	unsigned char *a = new unsigned char[size];
+	char *a = new char[size];
 	if (!a)  {
 		return ENOMEM;
 	}
 	// read data bits
-	f.read((char*)a, size);
+	f.read(a, size);
 	if (f.fail()) {
 		return EIO;
 	}
@@ -272,7 +272,7 @@ int AATree::load(ifstream &f, AATreeNode* &node, AADataBase *(*createData)(unsig
 	return ret == 0? load(f, node->right, createData) : ret;
 }
 
-int AATree::load(ifstream &f, AADataBase *(*createData)(unsigned char *a, unsigned int s)) {	
+int AATree::load(ifstream &f, AADataBase *(*createData)(char *a, size_t s)) {	
 	erase(tree);
 	int ret = load(f, tree, createData);
 	
@@ -282,7 +282,7 @@ int AATree::load(ifstream &f, AADataBase *(*createData)(unsigned char *a, unsign
 }
 
 int AATree::save(ofstream &f, AATreeNode* node) const {
-	unsigned int size;
+	size_t size;
 	if (!node) {
 		size = 0;
 		f.write(reinterpret_cast<const char *>(&size), sizeof(size));
@@ -293,7 +293,7 @@ int AATree::save(ofstream &f, AATreeNode* node) const {
 	}
 
 	// get data size and byte array representation
-	const unsigned char *a = node->data->getBytes(size);
+	const char *a = node->data->getBytes(size);
 	if (!a) {
 		return ENOMEM;
 	}
@@ -304,7 +304,7 @@ int AATree::save(ofstream &f, AATreeNode* node) const {
 		return EIO;
 	}
 	
-	f.write((char*)a, size);
+	f.write(a, size);
 	if (f.fail()) {
 		return EIO;
 	}

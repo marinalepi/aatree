@@ -3,7 +3,7 @@
 
 #include "aadata.h"
 
-typedef AADataBase *(*createDataElement)(unsigned char *a, unsigned int s);
+typedef AADataBase *(*createDataElement)(char *a, size_t s);
 
 struct AATreeNode {
 	AADataBase *data;
@@ -60,7 +60,7 @@ public:
 	void erase() {
 		erase(tree);
 	}
-	int load(ifstream &f, createDataElement =  createAADataBase);
+	int load(ifstream &f, createDataElement =  AADataBase::setBytes);
 	int save(ofstream &f) const;
 };
 #endif // AATREE_H
